@@ -1,67 +1,305 @@
+import {Component} from 'react'
 import Cookies from 'js-cookie'
+import Popup from 'reactjs-popup'
 import {Redirect, Link} from 'react-router-dom'
+import {AiFillHome, AiFillFire, AiFillHeart} from 'react-icons/ai'
+import {MdPlaylistAdd} from 'react-icons/md'
+import Loader from 'react-loader-spinner'
+import VideoItem from '../VideoItem'
+import {
+  MainCont,
+  Images,
+  ContOne,
+  PopupCont,
+  ListItem,
+  SearchImage,
+  SearchCont,
+  UnList,
+  Navheader,
+  LogoImg,
+  Navcontainer,
+  ProfileImg,
+  FMoon,
+  FSun,
+  FSearch,
+  IconBtn,
+} from './styledComponents'
 
-import Header from '../Header'
+const apiStatusConstants = {
+  initial: 'INITIAL',
+  success: 'SUCCESS',
+  failure: 'FAILURE',
+  inProgress: 'IN_PROGRESS',
+}
 
-// import './index.css'
-
-const Home = () => {
-  const jwtToken = Cookies.get('jwt_token')
-  if (jwtToken === undefined) {
-    return <Redirect to="/login" />
+class Home extends Component {
+  state = {
+    videosList: [],
+    apiStatus: apiStatusConstants.initial,
+    searchInput: '',
+    isDark: false,
   }
 
-  return (
-    <>
-      <Header />
-      <div className="home-container">
-        <div className="home-content">
-          <h1 className="home-heading">Clothes That Get YOU Noticed</h1>
-          <img
-            src="https://assets.ccbp.in/frontend/react-js/nxt-trendz-home-img.png"
-            alt="clothes that get you noticed"
-            className="home-mobile-img"
-          />
-          <p className="home-description">
-            Fashion is part of the daily air and it does not quite help that it
-            changes all the time. Clothes have always been a marker of the era
-            and we are in a revolution. Your fashion makes you been seen and
-            heard that way you are. So, celebrate the seasons new and exciting
-            fashion in your own way.
-          </p>
-          {/* <Link to="/products">
-            <button type="button" className="shop-now-button">
-              Shop Now
-            </button>
-          </Link> */}
-          {/* <ul className="nav-menu">
-            <li className="nav-menu-item">
-              <Link to="/" className="nav-link">
-                Home
-              </Link>
-            </li>
+  componentDidMount() {
+    this.getVideos()
+  }
 
-            <li className="nav-menu-item">
-              <Link to="/products" className="nav-link">
-                Products
-              </Link>
-            </li>
+  getVideos = async () => {
+    this.setState({
+      apiStatus: apiStatusConstants.inProgress,
+    })
+    const {searchInput} = this.state
+    const jwtToken = Cookies.get('jwt_token')
+    const apiUrl = `https://apis.ccbp.in/videos/all?search=${searchInput}`
+    const options = {
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+      },
+      method: 'GET',
+    }
+    const response = await fetch(apiUrl, options)
+    if (response.ok) {
+      const fetchedData = await response.json()
+      console.log(fetchedData)
+      const updatedData = fetchedData.videos.map(video => ({
+        title: video.title,
+        id: video.id,
+        thumbnailUrl: video.thumbnail_url,
+        channel: video.channel,
+        viewCount: video.view_count,
+        publishedAt: video.published_at,
+      }))
+      this.setState({
+        videosList: updatedData,
+        apiStatus: apiStatusConstants.success,
+      })
+      console.log(updatedData)
+    } else {
+      this.setState({
+        apiStatus: apiStatusConstants.failure,
+      })
+    }
+  }
 
-            <li className="nav-menu-item">
-              <Link to="/cart" className="nav-link">
-                Cart
-              </Link>
-            </li>
-          </ul> */}
-        </div>
-        <img
-          src="https://assets.ccbp.in/frontend/react-js/nxt-trendz-home-img.png"
-          alt="clothes that get you noticed"
-          className="home-desktop-img"
-        />
-      </div>
-    </>
+  renderFailureView = () => (
+    <div>
+      <img
+        src="https://assets.ccbp.in/frontend/react-js/nxt-watch-failure-view-light-theme-img.png"
+        alt="videos failure"
+      />
+      <h1>Oops! Something Went Wrong</h1>
+      <p>
+        We are having some trouble to complete your request. Please try again.
+      </p>
+      <button type="button">
+        <Link to="/">Retry</Link>
+      </button>
+    </div>
   )
+
+  renderVideosListView = () => {
+    const {videosList} = this.state
+    const shouldShowList = videosList.length > 0
+
+    return shouldShowList ? (
+      <div>
+        <UnList>
+          {videosList.map(video => (
+            <VideoItem video={video} key={video.id} />
+          ))}
+        </UnList>
+      </div>
+    ) : (
+      <SearchCont>
+        <SearchImage
+          src="https://assets.ccbp.in/frontend/react-js/nxt-watch-no-search-results-img.png"
+          alt="no videos"
+        />
+        <h1>No Search results Found</h1>
+        <p>Try different key words or remove search filters</p>
+        <button type="button">
+          <Link to="/">Retry</Link>
+        </button>
+      </SearchCont>
+    )
+  }
+
+  renderLoadingView = () => (
+    //   data-testid="loader"
+    <div>
+      <Loader type="ThreeDots" color="#ffffff" height="50" width="50" />
+    </div>
+  )
+
+  renderAllVideos = () => {
+    const {apiStatus} = this.state
+
+    switch (apiStatus) {
+      case apiStatusConstants.success:
+        return this.renderVideosListView()
+      case apiStatusConstants.failure:
+        return this.renderFailureView()
+      case apiStatusConstants.inProgress:
+        return this.renderLoadingView()
+      default:
+        return null
+    }
+  }
+
+  onChangeSearch = event => {
+    this.setState({searchInput: event.target.value})
+  }
+
+  changeSearchInput = () => {
+    const {searchInput} = this.state
+    this.setState({searchInput}, this.getVideos)
+  }
+
+  changeTheme = () => {
+    const {isDark} = this.state
+    this.setState({isDark: !isDark})
+  }
+
+  renderHeader() {
+    const {isDark} = this.state
+
+    return (
+      <Navheader color={isDark ? '#0f0f0f' : '#f9f9f9'}>
+        <div>
+          <Link to="/">
+            <LogoImg
+              src={
+                isDark
+                  ? 'https://assets.ccbp.in/frontend/react-js/nxt-watch-logo-dark-theme-img.png'
+                  : 'https://assets.ccbp.in/frontend/react-js/nxt-watch-logo-light-theme-img.png'
+              }
+              alt="nxt watch logo"
+            />
+          </Link>
+        </div>
+        <Navcontainer>
+          <IconBtn type="button" onClick={this.changeTheme}>
+            {isDark ? <FSun /> : <FMoon />}
+          </IconBtn>
+          <ProfileImg
+            src="https://assets.ccbp.in/frontend/react-js/nxt-watch-profile-img.png"
+            alt="profile"
+          />
+          <button
+            type="button"
+            className="logout-desktop-btn"
+            onClick={this.onClickLogout}
+          >
+            Logout
+          </button>
+        </Navcontainer>
+      </Navheader>
+    )
+  }
+
+  render() {
+    const jwtToken = Cookies.get('jwt_token')
+    if (jwtToken === undefined) {
+      return <Redirect to="/login" />
+    }
+
+    const {isDark} = this.state
+
+    return (
+      <>
+        <div>{this.renderHeader()}</div>
+        <MainCont color={isDark ? '#0f0f0f' : '#f9f9f9'}>
+          <ContOne>
+            <ul>
+              <ListItem>
+                <Link to="/">
+                  <AiFillHome /> Home
+                </Link>
+              </ListItem>
+
+              <ListItem>
+                <Link to="/trending">
+                  <AiFillFire /> Trending
+                </Link>
+              </ListItem>
+
+              <ListItem>
+                <Link to="/gaming">
+                  <AiFillHeart /> Gaming
+                </Link>
+              </ListItem>
+
+              <ListItem>
+                <Link to="/saved-videos">
+                  <MdPlaylistAdd /> Saved videos
+                </Link>
+              </ListItem>
+            </ul>
+            <div>
+              <h1>CONTACT US</h1>
+              <div>
+                <Images
+                  src="https://assets.ccbp.in/frontend/react-js/nxt-watch-facebook-logo-img.png"
+                  alt="facebook logo"
+                />
+                <Images
+                  src="https://assets.ccbp.in/frontend/react-js/nxt-watch-twitter-logo-img.png"
+                  alt="twitter logo"
+                />
+                <Images
+                  src="https://assets.ccbp.in/frontend/react-js/nxt-watch-linked-in-logo-img.png"
+                  alt="linked in logo"
+                />
+              </div>
+              <p>Enjoy! Now to see your channels and recommendations!</p>
+            </div>
+          </ContOne>
+          <div>
+            <PopupCont>
+              <img
+                src="https://assets.ccbp.in/frontend/react-js/nxt-watch-logo-light-theme-img.png"
+                alt="nxt watch logo"
+              />
+              <h1>Buy Nxt Watch Premium prepaid plans with UPI</h1>
+              <button type="button">GET IT NOW</button>
+            </PopupCont>
+            <Popup modal>
+              {close => (
+                <>
+                  <PopupCont>
+                    <img
+                      src="https://assets.ccbp.in/frontend/react-js/nxt-watch-logo-light-theme-img.png"
+                      alt="nxt watch logo"
+                    />
+                    <h1>Buy Nxt Watch Premium prepaid plans with UPI</h1>
+                    <button type="button">GET IT NOW</button>
+                  </PopupCont>
+                  <button
+                    type="button"
+                    className="trigger-button"
+                    onClick={() => close()}
+                  >
+                    Close
+                  </button>
+                </>
+              )}
+            </Popup>
+            <div>
+              <input
+                type="search"
+                placeholder="search"
+                onChange={this.onChangeSearch}
+              />
+              <button type="button" onClick={this.changeSearchInput}>
+                <FSearch />
+              </button>
+            </div>
+            {this.renderAllVideos()}
+          </div>
+        </MainCont>
+      </>
+    )
+  }
 }
 
 export default Home

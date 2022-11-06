@@ -17,7 +17,7 @@ export const Navheader = styled.nav`
   align-items: center;
   padding: 15px;
   max-width: 100vw;
-  background-color: ${props => (props.color ? '#0f0f0f' : '#f9f9f9')};
+  background-color: ${props => props.color};
 `
 export const IconBtn = styled.button`
   background-color: transparent;

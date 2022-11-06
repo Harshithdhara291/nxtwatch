@@ -28,7 +28,7 @@ class Header extends Component {
   render() {
     const {isDark} = this.state
     return (
-      <Navheader color={isDark}>
+      <Navheader color={isDark ? '#0f0f0f' : '#f9f9f9'}>
         <div>
           <Link to="/">
             <LogoImg
