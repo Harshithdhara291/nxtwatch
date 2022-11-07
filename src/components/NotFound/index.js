@@ -3,14 +3,11 @@ import Cookies from 'js-cookie'
 import {Link} from 'react-router-dom'
 import {AiFillHome, AiFillFire, AiFillHeart} from 'react-icons/ai'
 import {MdPlaylistAdd} from 'react-icons/md'
-import Loader from 'react-loader-spinner'
-import TrendingItem from '../TrendingItem'
 import {
   MainCont,
   Images,
   ContOne,
   ListItem,
-  UnList,
   Navheader,
   LogoImg,
   Navcontainer,

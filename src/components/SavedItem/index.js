@@ -2,7 +2,7 @@ import {Link} from 'react-router-dom'
 import {formatDistanceToNow} from 'date-fns'
 import {MainCont, Para, Thumb, MainCont1, Head} from './styledComponents'
 
-const TrendingItem = props => {
+const SavedItem = props => {
   const {video} = props
   const {title, id, thumbnailUrl, channel, viewCount, publishedAt} = video
   const channelData = {name: channel.name, imageUrl: channel.profile_image_url}
@@ -21,4 +21,4 @@ const TrendingItem = props => {
     </Link>
   )
 }
-export default TrendingItem
+export default SavedItem

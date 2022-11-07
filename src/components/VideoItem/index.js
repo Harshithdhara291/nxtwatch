@@ -6,7 +6,7 @@ const VideoItem = props => {
   const {video} = props
   const {title, id, thumbnailUrl, channel, viewCount, publishedAt} = video
   const channelData = {name: channel.name, imageUrl: channel.profile_image_url}
-
+  //   formatDistanceToNow(new Date(2021, 8, 20))
   return (
     <MainCont>
       <Link to={`/videos/${id}`}>
@@ -17,7 +17,7 @@ const VideoItem = props => {
             <Head>{title}</Head>
             <Para>{channelData.name}</Para>
             <Para>{viewCount} views</Para>
-            {/* <p></p> */}
+            <Para>{formatDistanceToNow(new Date(publishedAt))}</Para>
           </div>
         </MainCont1>
       </Link>

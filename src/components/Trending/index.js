@@ -3,6 +3,8 @@ import Cookies from 'js-cookie'
 import {Link} from 'react-router-dom'
 import {AiFillHome, AiFillFire, AiFillHeart} from 'react-icons/ai'
 import {MdPlaylistAdd} from 'react-icons/md'
+import Popup from 'reactjs-popup'
+
 import Loader from 'react-loader-spinner'
 import TrendingItem from '../TrendingItem'
 import {
@@ -164,13 +166,38 @@ class Home extends Component {
             src="https://assets.ccbp.in/frontend/react-js/nxt-watch-profile-img.png"
             alt="profile"
           />
-          <button
-            type="button"
-            className="logout-desktop-btn"
-            onClick={this.onClickLogout}
+          <Popup
+            modal
+            focus
+            trigger={<button type="button">Logout</button>}
+            overlayStyle={{
+              background: 'grey',
+              height: '200px',
+              width: '300px',
+              marginLeft: '500px',
+              marginTop: '200px',
+              borderRadius: '30px',
+              padding: '20px',
+            }}
           >
-            Logout
-          </button>
+            {close => (
+              <>
+                <div>
+                  <p>Are you sure, you want to logout?</p>
+                </div>
+                <button
+                  type="button"
+                  className="trigger-button"
+                  onClick={() => close()}
+                >
+                  Cancel
+                </button>
+                <button type="button" onClick={this.onClickLogout}>
+                  Confirm
+                </button>
+              </>
+            )}
+          </Popup>
         </Navcontainer>
       </Navheader>
     )

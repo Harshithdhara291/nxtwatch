@@ -1,138 +1,46 @@
 import {Component} from 'react'
 import Cookies from 'js-cookie'
-import {Link} from 'react-router-dom'
 import Popup from 'reactjs-popup'
 
+import {Link} from 'react-router-dom'
 import {AiFillHome, AiFillFire, AiFillHeart} from 'react-icons/ai'
 import {MdPlaylistAdd} from 'react-icons/md'
-import Loader from 'react-loader-spinner'
-import GamingItem from '../GamingItem'
+import SavedItem from '../SavedItem'
+
 import {
   MainCont,
   Images,
   ContOne,
+  ContTwo,
   ListItem,
-  UnList,
   Navheader,
   LogoImg,
+  Contact,
+  SearchImage,
   Navcontainer,
   ProfileImg,
   FMoon,
   FSun,
   IconBtn,
 } from './styledComponents'
+import SavedContext from '../../context/savedContext'
 
-const apiStatusConstants = {
-  initial: 'INITIAL',
-  success: 'SUCCESS',
-  failure: 'FAILURE',
-  inProgress: 'IN_PROGRESS',
-}
+// const apiStatusConstants = {
+//   initial: 'INITIAL',
+//   success: 'SUCCESS',
+//   failure: 'FAILURE',
+//   inProgress: 'IN_PROGRESS',
+// }
 
 class Home extends Component {
   state = {
-    videosList: [],
-    apiStatus: apiStatusConstants.initial,
     isDark: false,
-  }
-
-  componentDidMount() {
-    this.getVideos()
-  }
-
-  getVideos = async () => {
-    this.setState({
-      apiStatus: apiStatusConstants.inProgress,
-    })
-    const jwtToken = Cookies.get('jwt_token')
-    const apiUrl = `https://apis.ccbp.in/videos/gaming`
-    const options = {
-      headers: {
-        Authorization: `Bearer ${jwtToken}`,
-      },
-      method: 'GET',
-    }
-    const response = await fetch(apiUrl, options)
-    if (response.ok) {
-      const fetchedData = await response.json()
-      console.log(fetchedData)
-      const updatedData = fetchedData.videos.map(video => ({
-        title: video.title,
-        id: video.id,
-        thumbnailUrl: video.thumbnail_url,
-        viewCount: video.view_count,
-      }))
-      this.setState({
-        videosList: updatedData,
-        apiStatus: apiStatusConstants.success,
-      })
-      console.log(updatedData)
-    } else {
-      this.setState({
-        apiStatus: apiStatusConstants.failure,
-      })
-    }
   }
 
   onClickLogout = () => {
     const {history} = this.props
     Cookies.remove('jwt_token')
     history.replace('/login')
-  }
-
-  renderFailureView = () => {
-    const {isDark} = this.state
-    const image = isDark
-      ? 'https://assets.ccbp.in/frontend/react-js/nxt-watch-failure-view-dark-theme-img.png'
-      : 'https://assets.ccbp.in/frontend/react-js/nxt-watch-failure-view-light-theme-img.png'
-    return (
-      <>
-        <img src={image} alt="videos failure" />
-        <h1>Oops! Something Went Wrong</h1>
-        <p>
-          We are having some trouble to complete your request. Please try again.
-        </p>
-        <button type="button">
-          <Link to="/">Retry</Link>
-        </button>
-      </>
-    )
-  }
-
-  renderVideosListView = () => {
-    const {videosList} = this.state
-
-    return (
-      <div>
-        <UnList>
-          {videosList.map(video => (
-            <GamingItem video={video} key={video.id} />
-          ))}
-        </UnList>
-      </div>
-    )
-  }
-
-  renderLoadingView = () => (
-    //   data-testid="loader"
-    <div>
-      <Loader type="ThreeDots" color="#ffffff" height="50" width="50" />
-    </div>
-  )
-
-  renderAllVideos = () => {
-    const {apiStatus} = this.state
-
-    switch (apiStatus) {
-      case apiStatusConstants.success:
-        return this.renderVideosListView()
-      case apiStatusConstants.failure:
-        return this.renderFailureView()
-      case apiStatusConstants.inProgress:
-        return this.renderLoadingView()
-      default:
-        return null
-    }
   }
 
   changeTheme = () => {
@@ -202,6 +110,36 @@ class Home extends Component {
     )
   }
 
+  renderVideosListView = () => (
+    <SavedContext.Consumer>
+      {value => {
+        const {savedVideosList} = value
+        const shouldShowList = savedVideosList.length > 0
+
+        return shouldShowList ? (
+          <div>
+            <ul>
+              {savedVideosList.map(video => (
+                <SavedItem video={video} key={video.id} />
+              ))}
+            </ul>
+          </div>
+        ) : (
+          <>
+            <SearchImage
+              src="https://assets.ccbp.in/frontend/react-js/nxt-watch-no-saved-videos-img.png"
+              alt="no saved videos"
+            />
+            <h1>No saved videos found</h1>
+            <p>You can save your videos while watching them</p>
+          </>
+        )
+      }}
+    </SavedContext.Consumer>
+  )
+
+  // https://assets.ccbp.in/frontend/react-js/nxt-watch-no-saved-videos-img.png alt should be no saved videos
+
   render() {
     const {isDark} = this.state
 
@@ -251,21 +189,26 @@ class Home extends Component {
                   alt="linked in logo"
                 />
               </div>
-              <p>Enjoy! Now to see your channels and recommendations!</p>
+              <Contact>
+                <p>
+                  Enjoy! Now to see your
+                  <br /> channels and
+                  <br /> recommendations!
+                </p>
+              </Contact>
             </div>
           </ContOne>
-
-          <div>
+          <ContTwo>
             <div>
               <h1>
                 <span>
-                  <AiFillHeart />
+                  <AiFillFire />
                 </span>
-                Gaming
+                Saved Videos
               </h1>
             </div>
-            {this.renderAllVideos()}
-          </div>
+            {this.renderVideosListView()}
+          </ContTwo>
         </MainCont>
       </>
     )

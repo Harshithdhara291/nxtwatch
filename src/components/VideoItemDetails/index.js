@@ -5,9 +5,11 @@ import Loader from 'react-loader-spinner'
 import ReactPlayer from 'react-player'
 import {AiFillHome, AiFillFire, AiFillHeart} from 'react-icons/ai'
 import {BiLike, BiDislike} from 'react-icons/bi'
+import {formatDistanceToNow} from 'date-fns'
 
 import {MdPlaylistAdd} from 'react-icons/md'
 import {
+  Para,
   MainCont,
   Images,
   ContOne,
@@ -20,7 +22,10 @@ import {
   FMoon,
   FSun,
   IconBtn,
+  BtnCont,
+  SaveBtn,
 } from './styledComponents'
+import SavedContext from '../../context/savedContext'
 
 const apiStatusConstants = {
   initial: 'INITIAL',
@@ -34,6 +39,9 @@ class VideoItemDetails extends Component {
     productData: {},
     apiStatus: apiStatusConstants.initial,
     isDark: false,
+    isLiked: false,
+    isDisliked: false,
+    isSaved: false,
   }
 
   componentDidMount() {
@@ -111,68 +119,128 @@ class VideoItemDetails extends Component {
     )
   }
 
-  renderProductDetailsView = () => {
-    const {productData} = this.state
-    const {
-      title,
-      videoUrl,
-      channel,
-      viewCount,
-      publishedAt,
-      description,
-    } = productData
-    const channelData = {
-      name: channel.name,
-      imageUrl: channel.profile_image_url,
-      subs: channel.subscriber_count,
-    }
-    return (
-      <>
-        <div>
-          <ReactPlayer url={videoUrl} />
-          <div>
-            <h1>{title}</h1>
-            <div>
-              <div>
-                <p>{viewCount} views</p>
-              </div>
-              <div>
-                <p>
-                  <span>
-                    <BiLike />
-                  </span>
-                  Like
-                </p>
-                <p>
-                  <span>
-                    <BiDislike />
-                  </span>
-                  Dislike
-                </p>
-                <p>
-                  <span>
-                    <MdPlaylistAdd />
-                  </span>
-                  Save
-                </p>
-              </div>
-            </div>
-          </div>
-          <hr />
-          <div>
-            <div>
-              <img src={channelData.imageUrl} alt="channel logo" />
-              <div>
-                <p>{channelData.name}</p>
-                <p>{channelData.subs} subscribers</p>
-              </div>
-            </div>
-            <p>{description}</p>
-          </div>
-        </div>
-      </>
-    )
+  onLike = () => {
+    this.setState(prevSt => ({isLiked: !prevSt.isLiked}))
+    // this.setState(prevSt => ({isDisliked: !prevSt.isDisliked}))
+    this.setState({isDisliked: false})
   }
+
+  onDislike = () => {
+    // this.setState(prevSt => ({isLiked: !prevSt.isLiked}))
+    this.setState(prevSt => ({isDisliked: !prevSt.isDisliked}))
+    this.setState({isLiked: false})
+  }
+
+  onClickingSave = () => {
+    const {productData, savedVideosList} = this.state
+    const updatedList = [...savedVideosList, productData]
+    this.setState({savedVideosList: updatedList})
+    console.log(savedVideosList)
+  }
+
+  renderProductDetailsView = () => (
+    // const {productData, isLiked, isDisliked, isSaved} = this.state
+    // const {
+    //   title,
+    //   videoUrl,
+    //   channel,
+    //   viewCount,
+    //   publishedAt,
+    //   description,
+    // } = productData
+    // const channelData = {
+    //   name: channel.name,
+    //   imageUrl: channel.profile_image_url,
+    //   subs: channel.subscriber_count,
+    // }
+
+    <SavedContext.Consumer>
+      {value => {
+        const {productData, isLiked, isSaved, isDisliked} = this.state
+        const {
+          title,
+          videoUrl,
+          channel,
+          id,
+          viewCount,
+          publishedAt,
+          description,
+        } = productData
+        console.log(id)
+        const channelData = {
+          name: channel.name,
+          imageUrl: channel.profile_image_url,
+          subs: channel.subscriber_count,
+        }
+        const {addVideo} = value
+
+        const onClickSave = () => {
+          this.setState(
+            prevSt => ({isSaved: !prevSt.isSaved}),
+            addVideo({...productData}, isSaved),
+          )
+        }
+
+        return (
+          <div>
+            <ReactPlayer url={videoUrl} />
+            <div>
+              <h1>{title}</h1>
+              <div>
+                <div>
+                  <p>{viewCount} views</p>
+                  <Para>{formatDistanceToNow(new Date(publishedAt))}</Para>
+                </div>
+                <div>
+                  <BtnCont
+                    type="button"
+                    onClick={this.onLike}
+                    color={isLiked ? '#2563eb' : '#64748b'}
+                  >
+                    <span>
+                      <BiLike />
+                    </span>
+                    Like
+                  </BtnCont>
+                  <BtnCont
+                    type="button"
+                    onClick={this.onDislike}
+                    color={isDisliked ? '#2563eb' : '#64748b'}
+                  >
+                    <span>
+                      <BiDislike />
+                    </span>
+                    Dislike
+                  </BtnCont>
+                  <SaveBtn
+                    type="button"
+                    onClick={onClickSave}
+                    color={isSaved ? '#2563eb' : '#64748b'}
+                  >
+                    <span>
+                      <MdPlaylistAdd />
+                    </span>
+                    Save
+                  </SaveBtn>
+                </div>
+              </div>
+            </div>
+            <hr />
+            <div>
+              <div>
+                <img src={channelData.imageUrl} alt="channel logo" />
+                <div>
+                  <p>{channelData.name}</p>
+                  <p>{channelData.subs} subscribers</p>
+                </div>
+              </div>
+              <p>{description}</p>
+            </div>
+          </div>
+        )
+      }}
+    </SavedContext.Consumer>
+  )
 
   renderProductDetails = () => {
     const {apiStatus} = this.state
