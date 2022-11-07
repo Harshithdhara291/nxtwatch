@@ -63,27 +63,12 @@ export const ContOne = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
-  max-width: 300px;
+  width: 30vw;
   padding: 15px;
 `
-
-export const Contact = styled.div`
-  max-width: 300px;
-  padding: 15px;
-`
-
 export const Images = styled.img`
   height: 50px;
   width: 50px;
-  margin: 5px;
-`
-export const SearchCont = styled.div`
-  padding: 30px;
-`
-
-export const SearchImage = styled.img`
-  height: 500px;
-  width: 500px;
   margin: 5px;
 `
 
@@ -92,9 +77,4 @@ export const ListItem = styled.li`
   text-decoration: none;
   color: black;
   margin: 10px;
-`
-export const PopupCont = styled.div`
-  background-image: url('https://assets.ccbp.in/frontend/react-js/nxt-watch-banner-bg.png');
-  background-size: cover;
-  padding: 30px;
 `

@@ -1,28 +1,22 @@
 import {Component} from 'react'
 import Cookies from 'js-cookie'
-import Popup from 'reactjs-popup'
 import {Link} from 'react-router-dom'
 import {AiFillHome, AiFillFire, AiFillHeart} from 'react-icons/ai'
 import {MdPlaylistAdd} from 'react-icons/md'
 import Loader from 'react-loader-spinner'
-import VideoItem from '../VideoItem'
+import TrendingItem from '../TrendingItem'
 import {
   MainCont,
   Images,
   ContOne,
-  PopupCont,
   ListItem,
-  SearchImage,
-  SearchCont,
   UnList,
   Navheader,
   LogoImg,
-  Contact,
   Navcontainer,
   ProfileImg,
   FMoon,
   FSun,
-  FSearch,
   IconBtn,
 } from './styledComponents'
 
@@ -37,7 +31,6 @@ class Home extends Component {
   state = {
     videosList: [],
     apiStatus: apiStatusConstants.initial,
-    searchInput: '',
     isDark: false,
   }
 
@@ -49,9 +42,8 @@ class Home extends Component {
     this.setState({
       apiStatus: apiStatusConstants.inProgress,
     })
-    const {searchInput} = this.state
     const jwtToken = Cookies.get('jwt_token')
-    const apiUrl = `https://apis.ccbp.in/videos/all?search=${searchInput}`
+    const apiUrl = `https://apis.ccbp.in/videos/trending`
     const options = {
       headers: {
         Authorization: `Bearer ${jwtToken}`,
@@ -109,28 +101,14 @@ class Home extends Component {
 
   renderVideosListView = () => {
     const {videosList} = this.state
-    const shouldShowList = videosList.length > 0
-
-    return shouldShowList ? (
+    return (
       <div>
         <UnList>
           {videosList.map(video => (
-            <VideoItem video={video} key={video.id} />
+            <TrendingItem video={video} key={video.id} />
           ))}
         </UnList>
       </div>
-    ) : (
-      <SearchCont>
-        <SearchImage
-          src="https://assets.ccbp.in/frontend/react-js/nxt-watch-no-search-results-img.png"
-          alt="no videos"
-        />
-        <h1>No Search results Found</h1>
-        <p>Try different key words or remove search filters</p>
-        <button type="button">
-          <Link to="/">Retry</Link>
-        </button>
-      </SearchCont>
     )
   }
 
@@ -154,15 +132,6 @@ class Home extends Component {
       default:
         return null
     }
-  }
-
-  onChangeSearch = event => {
-    this.setState({searchInput: event.target.value})
-  }
-
-  changeSearchInput = () => {
-    const {searchInput} = this.state
-    this.setState({searchInput}, this.getVideos)
   }
 
   changeTheme = () => {
@@ -208,6 +177,11 @@ class Home extends Component {
   }
 
   render() {
+    // const jwtToken = Cookies.get('jwt_token')
+    // if (jwtToken === undefined) {
+    //   return <Redirect to="/login" />
+    // }
+
     const {isDark} = this.state
 
     return (
@@ -256,55 +230,16 @@ class Home extends Component {
                   alt="linked in logo"
                 />
               </div>
-              <Contact>
-                <p>
-                  Enjoy! Now to see your
-                  <br /> channels and
-                  <br /> recommendations!
-                </p>
-              </Contact>
+              <p>Enjoy! Now to see your channels and recommendations!</p>
             </div>
           </ContOne>
           <div>
-            <PopupCont>
-              <img
-                src="https://assets.ccbp.in/frontend/react-js/nxt-watch-logo-light-theme-img.png"
-                alt="nxt watch logo"
-              />
-              <h1>Buy Nxt Watch Premium prepaid plans with UPI</h1>
-              <button type="button">GET IT NOW</button>
-            </PopupCont>
-            <Popup modal>
-              {close => (
-                <>
-                  <PopupCont>
-                    <img
-                      src="https://assets.ccbp.in/frontend/react-js/nxt-watch-logo-light-theme-img.png"
-                      alt="nxt watch logo"
-                    />
-                    <h1>Buy Nxt Watch Premium prepaid plans with UPI</h1>
-                    <button type="button">GET IT NOW</button>
-                  </PopupCont>
-                  <button
-                    type="button"
-                    className="trigger-button"
-                    onClick={() => close()}
-                  >
-                    Close
-                  </button>
-                </>
-              )}
-            </Popup>
-            <div>
-              <input
-                type="search"
-                placeholder="search"
-                onChange={this.onChangeSearch}
-              />
-              <button type="button" onClick={this.changeSearchInput}>
-                <FSearch />
-              </button>
-            </div>
+            <h1>
+              <span>
+                <AiFillFire />
+              </span>
+              Trending
+            </h1>
             {this.renderAllVideos()}
           </div>
         </MainCont>

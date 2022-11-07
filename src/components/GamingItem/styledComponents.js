@@ -5,7 +5,7 @@ export const MainCont = styled.li`
   flex-direction: column;
   align-items: center;
   width: 230px;
-  margin: 35px;
+  margin: 10px;
 `
 export const MainCont1 = styled.div`
   display: flex;
@@ -13,15 +13,9 @@ export const MainCont1 = styled.div`
   align-items: center;
 `
 
-export const Logo = styled.img`
-  height: 50px;
-  width: 50px;
-  margin: 5px;
-`
-
 export const Thumb = styled.img`
-  height: 150px;
-  width: 260px;
+  height: 300px;
+  width: 200px;
 `
 export const Head = styled.h1`
   font-size: 10px;

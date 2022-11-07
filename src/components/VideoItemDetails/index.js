@@ -1,20 +1,17 @@
 import {Component} from 'react'
-import Cookies from 'js-cookie'
-import Popup from 'reactjs-popup'
 import {Link} from 'react-router-dom'
-import {AiFillHome, AiFillFire, AiFillHeart} from 'react-icons/ai'
-import {MdPlaylistAdd} from 'react-icons/md'
+import Cookies from 'js-cookie'
 import Loader from 'react-loader-spinner'
-import VideoItem from '../VideoItem'
+import ReactPlayer from 'react-player'
+import {AiFillHome, AiFillFire, AiFillHeart} from 'react-icons/ai'
+import {BiLike, BiDislike} from 'react-icons/bi'
+
+import {MdPlaylistAdd} from 'react-icons/md'
 import {
   MainCont,
   Images,
   ContOne,
-  PopupCont,
   ListItem,
-  SearchImage,
-  SearchCont,
-  UnList,
   Navheader,
   LogoImg,
   Contact,
@@ -22,7 +19,6 @@ import {
   ProfileImg,
   FMoon,
   FSun,
-  FSearch,
   IconBtn,
 } from './styledComponents'
 
@@ -33,25 +29,38 @@ const apiStatusConstants = {
   inProgress: 'IN_PROGRESS',
 }
 
-class Home extends Component {
+class VideoItemDetails extends Component {
   state = {
-    videosList: [],
+    productData: {},
     apiStatus: apiStatusConstants.initial,
-    searchInput: '',
     isDark: false,
   }
 
   componentDidMount() {
-    this.getVideos()
+    this.getVideoData()
   }
 
-  getVideos = async () => {
+  getFormattedData = data => ({
+    videoUrl: data.video_details.video_url,
+    thumbnailUrl: data.video_details.thumbnail_url,
+    description: data.video_details.description,
+    id: data.video_details.id,
+    channel: data.video_details.channel,
+    viewCount: data.video_details.view_count,
+    publishedAt: data.video_details.published_at,
+    title: data.video_details.title,
+  })
+
+  getVideoData = async () => {
+    const {match} = this.props
+    const {params} = match
+    const {id} = params
+
     this.setState({
       apiStatus: apiStatusConstants.inProgress,
     })
-    const {searchInput} = this.state
     const jwtToken = Cookies.get('jwt_token')
-    const apiUrl = `https://apis.ccbp.in/videos/all?search=${searchInput}`
+    const apiUrl = `https://apis.ccbp.in/videos/${id}`
     const options = {
       headers: {
         Authorization: `Bearer ${jwtToken}`,
@@ -62,31 +71,26 @@ class Home extends Component {
     if (response.ok) {
       const fetchedData = await response.json()
       console.log(fetchedData)
-      const updatedData = fetchedData.videos.map(video => ({
-        title: video.title,
-        id: video.id,
-        thumbnailUrl: video.thumbnail_url,
-        channel: video.channel,
-        viewCount: video.view_count,
-        publishedAt: video.published_at,
-      }))
+      const updatedData = this.getFormattedData(fetchedData)
       this.setState({
-        videosList: updatedData,
+        productData: updatedData,
         apiStatus: apiStatusConstants.success,
       })
       console.log(updatedData)
-    } else {
+    }
+    if (response.status === 404) {
       this.setState({
         apiStatus: apiStatusConstants.failure,
       })
     }
   }
 
-  onClickLogout = () => {
-    const {history} = this.props
-    Cookies.remove('jwt_token')
-    history.replace('/login')
-  }
+  renderLoadingView = () => (
+    //   data-testid="loader"
+    <div>
+      <Loader type="ThreeDots" color="#ffffff" height="50" width="50" />
+    </div>
+  )
 
   renderFailureView = () => {
     const {isDark} = this.state
@@ -107,46 +111,75 @@ class Home extends Component {
     )
   }
 
-  renderVideosListView = () => {
-    const {videosList} = this.state
-    const shouldShowList = videosList.length > 0
-
-    return shouldShowList ? (
-      <div>
-        <UnList>
-          {videosList.map(video => (
-            <VideoItem video={video} key={video.id} />
-          ))}
-        </UnList>
-      </div>
-    ) : (
-      <SearchCont>
-        <SearchImage
-          src="https://assets.ccbp.in/frontend/react-js/nxt-watch-no-search-results-img.png"
-          alt="no videos"
-        />
-        <h1>No Search results Found</h1>
-        <p>Try different key words or remove search filters</p>
-        <button type="button">
-          <Link to="/">Retry</Link>
-        </button>
-      </SearchCont>
+  renderProductDetailsView = () => {
+    const {productData} = this.state
+    const {
+      title,
+      videoUrl,
+      channel,
+      viewCount,
+      publishedAt,
+      description,
+    } = productData
+    const channelData = {
+      name: channel.name,
+      imageUrl: channel.profile_image_url,
+      subs: channel.subscriber_count,
+    }
+    return (
+      <>
+        <div>
+          <ReactPlayer url={videoUrl} />
+          <div>
+            <h1>{title}</h1>
+            <div>
+              <div>
+                <p>{viewCount} views</p>
+              </div>
+              <div>
+                <p>
+                  <span>
+                    <BiLike />
+                  </span>
+                  Like
+                </p>
+                <p>
+                  <span>
+                    <BiDislike />
+                  </span>
+                  Dislike
+                </p>
+                <p>
+                  <span>
+                    <MdPlaylistAdd />
+                  </span>
+                  Save
+                </p>
+              </div>
+            </div>
+          </div>
+          <hr />
+          <div>
+            <div>
+              <img src={channelData.imageUrl} alt="channel logo" />
+              <div>
+                <p>{channelData.name}</p>
+                <p>{channelData.subs} subscribers</p>
+              </div>
+            </div>
+            <p>{description}</p>
+          </div>
+        </div>
+      </>
     )
   }
 
-  renderLoadingView = () => (
-    //   data-testid="loader"
-    <div>
-      <Loader type="ThreeDots" color="#ffffff" height="50" width="50" />
-    </div>
-  )
-
-  renderAllVideos = () => {
+  renderProductDetails = () => {
     const {apiStatus} = this.state
 
     switch (apiStatus) {
       case apiStatusConstants.success:
-        return this.renderVideosListView()
+        return this.renderProductDetailsView()
       case apiStatusConstants.failure:
         return this.renderFailureView()
       case apiStatusConstants.inProgress:
@@ -156,13 +189,10 @@ class Home extends Component {
     }
   }
 
-  onChangeSearch = event => {
-    this.setState({searchInput: event.target.value})
-  }
-
-  changeSearchInput = () => {
-    const {searchInput} = this.state
-    this.setState({searchInput}, this.getVideos)
+  onClickLogout = () => {
+    const {history} = this.props
+    Cookies.remove('jwt_token')
+    history.replace('/login')
   }
 
   changeTheme = () => {
@@ -209,7 +239,6 @@ class Home extends Component {
 
   render() {
     const {isDark} = this.state
-
     return (
       <>
         <div>{this.renderHeader()}</div>
@@ -265,52 +294,11 @@ class Home extends Component {
               </Contact>
             </div>
           </ContOne>
-          <div>
-            <PopupCont>
-              <img
-                src="https://assets.ccbp.in/frontend/react-js/nxt-watch-logo-light-theme-img.png"
-                alt="nxt watch logo"
-              />
-              <h1>Buy Nxt Watch Premium prepaid plans with UPI</h1>
-              <button type="button">GET IT NOW</button>
-            </PopupCont>
-            <Popup modal>
-              {close => (
-                <>
-                  <PopupCont>
-                    <img
-                      src="https://assets.ccbp.in/frontend/react-js/nxt-watch-logo-light-theme-img.png"
-                      alt="nxt watch logo"
-                    />
-                    <h1>Buy Nxt Watch Premium prepaid plans with UPI</h1>
-                    <button type="button">GET IT NOW</button>
-                  </PopupCont>
-                  <button
-                    type="button"
-                    className="trigger-button"
-                    onClick={() => close()}
-                  >
-                    Close
-                  </button>
-                </>
-              )}
-            </Popup>
-            <div>
-              <input
-                type="search"
-                placeholder="search"
-                onChange={this.onChangeSearch}
-              />
-              <button type="button" onClick={this.changeSearchInput}>
-                <FSearch />
-              </button>
-            </div>
-            {this.renderAllVideos()}
-          </div>
+          <div>{this.renderProductDetails()}</div>
         </MainCont>
       </>
     )
   }
 }
 
-export default Home
+export default VideoItemDetails
