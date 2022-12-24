@@ -1,11 +1,16 @@
+import {Link} from 'react-router-dom'
 import styled from 'styled-components'
 
+export const Linked = styled(Link)`
+  text-decoration: none;
+`
 export const MainCont = styled.li`
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 230px;
   margin: 35px;
+  padding: 20px;
 `
 export const MainCont1 = styled.div`
   display: flex;

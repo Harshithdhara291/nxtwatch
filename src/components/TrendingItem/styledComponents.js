@@ -1,4 +1,9 @@
+import {Link} from 'react-router-dom'
 import styled from 'styled-components'
+
+export const Linked = styled(Link)`
+  text-decoration: none;
+`
 
 export const MainCont = styled.li`
   display: flex;

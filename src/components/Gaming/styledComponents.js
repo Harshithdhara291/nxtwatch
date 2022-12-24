@@ -1,5 +1,21 @@
+import {Link} from 'react-router-dom'
 import styled from 'styled-components'
 import {FaMoon, FaSun, FaSearch} from 'react-icons/fa'
+
+export const Linked = styled(Link)`
+  text-decoration: none;
+`
+export const Contact = styled.div`
+  max-width: 300px;
+  padding: 15px;
+`
+export const ListItem = styled.li`
+  list-style-type: none;
+  text-decoration: none;
+  padding: 13px;
+  border-radius: 7px;
+  margin: 10px;
+`
 
 export const FMoon = styled(FaMoon)`
   height: 40px;
@@ -70,11 +86,4 @@ export const Images = styled.img`
   height: 50px;
   width: 50px;
   margin: 5px;
-`
-
-export const ListItem = styled.li`
-  list-style-type: none;
-  text-decoration: none;
-  color: black;
-  margin: 10px;
 `

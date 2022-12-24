@@ -1,6 +1,12 @@
-import {Link} from 'react-router-dom'
 import {formatDistanceToNow} from 'date-fns'
-import {MainCont, Para, Thumb, MainCont1, Head} from './styledComponents'
+import {
+  Linked,
+  MainCont,
+  Para,
+  Thumb,
+  MainCont1,
+  Head,
+} from './styledComponents'
 
 const TrendingItem = props => {
   const {video} = props
@@ -8,7 +14,7 @@ const TrendingItem = props => {
   const channelData = {name: channel.name, imageUrl: channel.profile_image_url}
 
   return (
-    <Link to={`/videos/${id}`}>
+    <Linked to={`/videos/${id}`}>
       <MainCont>
         <Thumb src={thumbnailUrl} alt="video thumbnail" />
         <MainCont1>
@@ -18,7 +24,7 @@ const TrendingItem = props => {
           <Para>{formatDistanceToNow(new Date(publishedAt))}</Para>
         </MainCont1>
       </MainCont>
-    </Link>
+    </Linked>
   )
 }
 export default TrendingItem

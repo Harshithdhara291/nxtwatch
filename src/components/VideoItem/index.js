@@ -1,6 +1,13 @@
-import {Link} from 'react-router-dom'
 import {formatDistanceToNow} from 'date-fns'
-import {MainCont, Logo, Para, Thumb, MainCont1, Head} from './styledComponents'
+import {
+  MainCont,
+  Logo,
+  Para,
+  Thumb,
+  MainCont1,
+  Head,
+  Linked,
+} from './styledComponents'
 
 const VideoItem = props => {
   const {video} = props
@@ -9,7 +16,7 @@ const VideoItem = props => {
   //   formatDistanceToNow(new Date(2021, 8, 20))
   return (
     <MainCont>
-      <Link to={`/videos/${id}`}>
+      <Linked to={`/videos/${id}`}>
         <Thumb src={thumbnailUrl} alt="video thumbnail" />
         <MainCont1>
           <Logo src={channelData.imageUrl} alt="channel logo" />
@@ -20,7 +27,7 @@ const VideoItem = props => {
             <Para>{formatDistanceToNow(new Date(publishedAt))}</Para>
           </div>
         </MainCont1>
-      </Link>
+      </Linked>
     </MainCont>
   )
 }

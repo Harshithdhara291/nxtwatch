@@ -1,8 +1,6 @@
 import {Component} from 'react'
 import Cookies from 'js-cookie'
 import Popup from 'reactjs-popup'
-
-import {Link} from 'react-router-dom'
 import {AiFillHome, AiFillFire, AiFillHeart} from 'react-icons/ai'
 import {MdPlaylistAdd} from 'react-icons/md'
 import SavedItem from '../SavedItem'
@@ -22,6 +20,7 @@ import {
   FMoon,
   FSun,
   IconBtn,
+  Linked,
 } from './styledComponents'
 import SavedContext from '../../context/savedContext'
 
@@ -54,7 +53,7 @@ class Home extends Component {
     return (
       <Navheader color={isDark ? '#0f0f0f' : '#f9f9f9'}>
         <div>
-          <Link to="/">
+          <Linked to="/">
             <LogoImg
               src={
                 isDark
@@ -63,7 +62,7 @@ class Home extends Component {
               }
               alt="nxt watch logo"
             />
-          </Link>
+          </Linked>
         </div>
         <Navcontainer>
           <IconBtn type="button" onClick={this.changeTheme}>
@@ -149,28 +148,27 @@ class Home extends Component {
         <MainCont color={isDark ? '#0f0f0f' : '#f9f9f9'}>
           <ContOne>
             <ul>
-              <ListItem>
-                <Link to="/">
+              <Linked to="/">
+                <ListItem>
                   <AiFillHome /> Home
-                </Link>
-              </ListItem>
-
+                </ListItem>
+              </Linked>
               <ListItem>
-                <Link to="/trending">
+                <Linked to="/trending">
                   <AiFillFire /> Trending
-                </Link>
+                </Linked>
               </ListItem>
 
               <ListItem>
-                <Link to="/gaming">
+                <Linked to="/gaming">
                   <AiFillHeart /> Gaming
-                </Link>
+                </Linked>
               </ListItem>
 
               <ListItem>
-                <Link to="/saved-videos">
-                  <MdPlaylistAdd /> Saved videos
-                </Link>
+                <Linked to="/saved-videos">
+                  <MdPlaylistAdd /> Saved
+                </Linked>
               </ListItem>
             </ul>
             <div>

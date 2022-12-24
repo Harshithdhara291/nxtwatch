@@ -29,13 +29,14 @@
   border-radius: 8px;
   width: 100%;
   max-width: 350px;
+  background-color: #fcfcfc;
 }
 
 @media screen and (min-width: 992px) {
   .form-container {
     width: 350px;
     flex-shrink: 0;
-    box-shadow: 0px 8px 40px rgba(7, 7, 7, 0.08);
+    box-shadow: 0px 8px 40px rgba(7, 7, 7, 0.384);
     padding: 64px 48px 64px 48px;
   }
 }
@@ -96,14 +97,40 @@
   outline: none;
   cursor: pointer;
 }
+.login-button:hover {
+  font-family: 'Roboto';
+  font-weight: bold;
+  font-size: 14px;
+  color: #0b69ff;
+  height: 40px;
+  width: 100%;
+  margin-top: 20px;
+  margin-bottom: 2px;
+  background-color: #fdfdfd;
+  border-radius: 8px;
+  border: 1px solid #0b69ff;
+  outline: none;
+  cursor: pointer;
+}
 
 .error-message {
   align-self: start;
-  font-size: 12px;
-  margin-top: 3px;
+  font-size: 13px;
+  margin-top: 7px;
   margin-bottom: 0px;
   font-family: 'Roboto';
   font-size: 12px;
   line-height: 16px;
   color: #ff0b37;
+}
+.check-text {
+  margin-top: 0.25rem;
+  margin-bottom: 0px;
+  font-family: 'Roboto';
+  font-weight: bold;
+  font-size: 13px;
+  line-height: 16px;
+  color: #475569;
+  display: flex;
+  align-items: center;
 }

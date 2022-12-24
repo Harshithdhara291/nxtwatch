@@ -1,4 +1,9 @@
+import {Link} from 'react-router-dom'
 import styled from 'styled-components'
+
+export const Linked = styled(Link)`
+  text-decoration: none;
+`
 
 export const MainCont = styled.li`
   display: flex;
@@ -14,7 +19,7 @@ export const MainCont1 = styled.div`
 `
 
 export const Thumb = styled.img`
-  height: 300px;
+  height: 280px;
   width: 200px;
 `
 export const Head = styled.h1`

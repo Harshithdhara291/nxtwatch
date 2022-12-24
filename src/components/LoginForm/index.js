@@ -73,8 +73,9 @@ class LoginForm extends Component {
           value={password}
           onChange={this.onChangePassword}
           placeholder="Password"
+          required
         />
-        <div>
+        <div className="check-text">
           <input type="checkbox" id="pass" onChange={this.onToggle} />
           <label htmlFor="pass">Show Password</label>
         </div>
@@ -96,6 +97,7 @@ class LoginForm extends Component {
           value={username}
           onChange={this.onChangeUsername}
           placeholder="Username"
+          required
         />
       </>
     )

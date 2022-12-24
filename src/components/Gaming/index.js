@@ -1,6 +1,5 @@
 import {Component} from 'react'
 import Cookies from 'js-cookie'
-import {Link} from 'react-router-dom'
 import Popup from 'reactjs-popup'
 
 import {AiFillHome, AiFillFire, AiFillHeart} from 'react-icons/ai'
@@ -20,6 +19,8 @@ import {
   FMoon,
   FSun,
   IconBtn,
+  Linked,
+  Contact,
 } from './styledComponents'
 
 const apiStatusConstants = {
@@ -93,7 +94,7 @@ class Home extends Component {
           We are having some trouble to complete your request. Please try again.
         </p>
         <button type="button">
-          <Link to="/">Retry</Link>
+          <Linked to="/">Retry</Linked>
         </button>
       </>
     )
@@ -146,7 +147,7 @@ class Home extends Component {
     return (
       <Navheader color={isDark ? '#0f0f0f' : '#f9f9f9'}>
         <div>
-          <Link to="/">
+          <Linked to="/">
             <LogoImg
               src={
                 isDark
@@ -155,7 +156,7 @@ class Home extends Component {
               }
               alt="nxt watch logo"
             />
-          </Link>
+          </Linked>
         </div>
         <Navcontainer>
           <IconBtn type="button" onClick={this.changeTheme}>
@@ -211,28 +212,27 @@ class Home extends Component {
         <MainCont color={isDark ? '#0f0f0f' : '#f9f9f9'}>
           <ContOne>
             <ul>
-              <ListItem>
-                <Link to="/">
+              <Linked to="/">
+                <ListItem>
                   <AiFillHome /> Home
-                </Link>
-              </ListItem>
-
+                </ListItem>
+              </Linked>
               <ListItem>
-                <Link to="/trending">
+                <Linked to="/trending">
                   <AiFillFire /> Trending
-                </Link>
+                </Linked>
               </ListItem>
 
               <ListItem>
-                <Link to="/gaming">
+                <Linked to="/gaming">
                   <AiFillHeart /> Gaming
-                </Link>
+                </Linked>
               </ListItem>
 
               <ListItem>
-                <Link to="/saved-videos">
-                  <MdPlaylistAdd /> Saved videos
-                </Link>
+                <Linked to="/saved-videos">
+                  <MdPlaylistAdd /> Saved
+                </Linked>
               </ListItem>
             </ul>
             <div>
@@ -251,10 +251,15 @@ class Home extends Component {
                   alt="linked in logo"
                 />
               </div>
-              <p>Enjoy! Now to see your channels and recommendations!</p>
+              <Contact>
+                <p>
+                  Enjoy! Now to see your
+                  <br /> channels and
+                  <br /> recommendations!
+                </p>
+              </Contact>
             </div>
           </ContOne>
-
           <div>
             <div>
               <h1>

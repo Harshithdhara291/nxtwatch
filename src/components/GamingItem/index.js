@@ -1,5 +1,11 @@
-import {Link} from 'react-router-dom'
-import {MainCont, Para, Thumb, MainCont1, Head} from './styledComponents'
+import {
+  MainCont,
+  Para,
+  Thumb,
+  MainCont1,
+  Head,
+  Linked,
+} from './styledComponents'
 
 const GamingItem = props => {
   const {video} = props
@@ -7,7 +13,7 @@ const GamingItem = props => {
 
   return (
     <MainCont>
-      <Link to={`/videos/${id}`}>
+      <Linked to={`/videos/${id}`}>
         <Thumb src={thumbnailUrl} alt="video thumbnail" />
         <MainCont1>
           <div>
@@ -16,7 +22,7 @@ const GamingItem = props => {
             {/* <p></p> */}
           </div>
         </MainCont1>
-      </Link>
+      </Linked>
     </MainCont>
   )
 }

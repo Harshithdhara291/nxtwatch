@@ -54,7 +54,7 @@ class Header extends Component {
             className="logout-desktop-btn"
             onClick={this.onClickLogout}
           >
-            Logout
+            LogOut
           </button>
         </Navcontainer>
       </Navheader>

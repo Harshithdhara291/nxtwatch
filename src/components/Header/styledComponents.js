@@ -32,8 +32,8 @@ export const Navcontainer = styled.div`
   width: 100%;
 `
 export const LogoImg = styled.img`
-  width: 280px;
-  height: 50px;
+  width: 200px;
+  height: 30px;
   margin-right: 200px;
   margin-left: 10px;
 `

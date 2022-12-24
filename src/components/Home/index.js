@@ -1,13 +1,12 @@
 import {Component} from 'react'
 import Cookies from 'js-cookie'
-import {Link} from 'react-router-dom'
 import {AiFillHome, AiFillFire, AiFillHeart} from 'react-icons/ai'
 import Popup from 'reactjs-popup'
-
 import {MdPlaylistAdd} from 'react-icons/md'
 import Loader from 'react-loader-spinner'
 import VideoItem from '../VideoItem'
 import {
+  Linked,
   MainCont,
   Images,
   ContOne,
@@ -25,6 +24,11 @@ import {
   FSun,
   FSearch,
   IconBtn,
+  LogoutBtn,
+  ContTwo,
+  SearchContTwo,
+  Input,
+  SearchBtn,
 } from './styledComponents'
 
 const apiStatusConstants = {
@@ -97,12 +101,12 @@ class Home extends Component {
     return (
       <>
         <img src={image} alt="videos failure" />
-        <h1>Oops! Something Went Wrong</h1>
+        <h1>Oops! Something went Wrong</h1>
         <p>
           We are having some trouble to complete your request. Please try again.
         </p>
         <button type="button">
-          <Link to="/">Retry</Link>
+          <Linked to="/">Retry</Linked>
         </button>
       </>
     )
@@ -129,7 +133,7 @@ class Home extends Component {
         <h1>No Search results Found</h1>
         <p>Try different key words or remove search filters</p>
         <button type="button">
-          <Link to="/">Retry</Link>
+          <Linked to="/">Retry</Linked>
         </button>
       </SearchCont>
     )
@@ -138,7 +142,7 @@ class Home extends Component {
   renderLoadingView = () => (
     //   data-testid="loader"
     <div>
-      <Loader type="ThreeDots" color="#ffffff" height="50" width="50" />
+      <Loader type="ThreeDots" color="black" height="50" width="50" />
     </div>
   )
 
@@ -177,7 +181,7 @@ class Home extends Component {
     return (
       <Navheader color={isDark ? '#0f0f0f' : '#f9f9f9'}>
         <div>
-          <Link to="/">
+          <Linked to="/">
             <LogoImg
               src={
                 isDark
@@ -186,7 +190,7 @@ class Home extends Component {
               }
               alt="nxt watch logo"
             />
-          </Link>
+          </Linked>
         </div>
         <Navcontainer>
           <IconBtn type="button" onClick={this.changeTheme}>
@@ -196,12 +200,20 @@ class Home extends Component {
             src="https://assets.ccbp.in/frontend/react-js/nxt-watch-profile-img.png"
             alt="profile"
           />
+          {/* <button
+            type="button"
+            className="logout-desktop-btn"
+            onClick={this.onClickLogout}
+          >
+            Logout
+          </button> */}
           <Popup
             modal
             focus
-            trigger={<button type="button">Logout</button>}
+            trigger={<LogoutBtn type="button">Logout</LogoutBtn>}
             overlayStyle={{
-              background: 'grey',
+              background: 'white',
+              border: '1px solid black',
               height: '200px',
               width: '300px',
               marginLeft: '500px',
@@ -215,16 +227,16 @@ class Home extends Component {
                 <div>
                   <p>Are you sure, you want to logout?</p>
                 </div>
-                <button
+                <LogoutBtn
                   type="button"
                   className="trigger-button"
                   onClick={() => close()}
                 >
                   Cancel
-                </button>
-                <button type="button" onClick={this.onClickLogout}>
+                </LogoutBtn>
+                <LogoutBtn type="button" onClick={this.onClickLogout}>
                   Confirm
-                </button>
+                </LogoutBtn>
               </>
             )}
           </Popup>
@@ -242,28 +254,27 @@ class Home extends Component {
         <MainCont color={isDark ? '#0f0f0f' : '#f9f9f9'}>
           <ContOne>
             <ul>
-              <ListItem>
-                <Link to="/">
+              <Linked to="/">
+                <ListItem>
                   <AiFillHome /> Home
-                </Link>
-              </ListItem>
-
+                </ListItem>
+              </Linked>
               <ListItem>
-                <Link to="/trending">
+                <Linked to="/trending">
                   <AiFillFire /> Trending
-                </Link>
+                </Linked>
               </ListItem>
 
               <ListItem>
-                <Link to="/gaming">
+                <Linked to="/gaming">
                   <AiFillHeart /> Gaming
-                </Link>
+                </Linked>
               </ListItem>
 
               <ListItem>
-                <Link to="/saved-videos">
-                  <MdPlaylistAdd /> Saved videos
-                </Link>
+                <Linked to="/saved-videos">
+                  <MdPlaylistAdd /> Saved
+                </Linked>
               </ListItem>
             </ul>
             <div>
@@ -291,7 +302,7 @@ class Home extends Component {
               </Contact>
             </div>
           </ContOne>
-          <div>
+          <ContTwo>
             <PopupCont>
               <img
                 src="https://assets.ccbp.in/frontend/react-js/nxt-watch-logo-light-theme-img.png"
@@ -321,18 +332,14 @@ class Home extends Component {
                 </>
               )}
             </Popup>
-            <div>
-              <input
-                type="search"
-                placeholder="search"
-                onChange={this.onChangeSearch}
-              />
-              <button type="button" onClick={this.changeSearchInput}>
+            <SearchContTwo>
+              <Input onChange={this.onChangeSearch} />
+              <SearchBtn type="button" onClick={this.changeSearchInput}>
                 <FSearch />
-              </button>
-            </div>
+              </SearchBtn>
+            </SearchContTwo>
             {this.renderAllVideos()}
-          </div>
+          </ContTwo>
         </MainCont>
       </>
     )
